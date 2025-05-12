@@ -10,10 +10,16 @@ check <- list(host = host,
               sid = sid,
               username = username,
               password = password)
-if(any(is.null(unlist(check)))){
-  cat("A required field for connecting to database is missing", sep = '\n')
-  cat(paste("Please add non NULL values for ", paste(names(check)[which(unlist(lapply(check, is.null)))], collapse = ', ')), sep = '\n')
+checkDatabaseCreds <- function(d){
+  if(any(is.null(unlist(d)))){
+  stop(paste("A required field for connecting to database is missing.",
+             "Please add non-NULL values for", 
+             paste(names(d)[which(unlist(lapply(d, is.null)))], collapse = ', '))
+       )
+    }
 }
+checkDatabaseCreds(d = check)
+
 # set up data source, username and password for database access
 assign("host", host, envir=my.env)
 assign("port", port, envir=my.env)
