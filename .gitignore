@@ -47,3 +47,14 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# any produced data files
+analysis/*.rda
+analysis/netCDFclimatology
+analysis/*.nc
+
+# any figures
+analysis/figures
+
+# any data
+analysis/data
