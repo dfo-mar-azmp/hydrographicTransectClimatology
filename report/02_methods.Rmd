@@ -1,0 +1,23 @@
+# Methods {#sec:methods}
+
+## Seasonal date ranges
+
+The time range used to define each season follows previous climatology calculation methods. For spring, the date ranges are April 01 to May 15 and for fall, September 15 to October 31. Data collected on an AZMP mission, outside of these date ranges, was excluded from the climatology calculation. 
+
+## Classifying transects and stations
+
+Prior to characterizing which station occupations belong to defined transects and stations for the AZMP, a methodology had to be developed. Using the station locations, Table \@ref(tab:stationCoordinates), a transect polygon was constructed, as well as polygons for each station. For the transect polygon, the first, in general, near-shore and last, off-shore, station was used to calculate the angle of the transect. A polygon with an arbitrarily chosen width of 8km was constructed. A polygon for each individual station was also created, these were aligned with the angle of the transect polygon and bottom bathymetry. A width, here meaning along-slope, of 8 km was used for consistency with the transect polygon, as well as for the length, here meaning cross-slope. For some transects, the stations are less than 8 km apart, therefore, to prevent overlap between station polygons, the inter-station distance was used for the length.
+
+For the Halifax transect, there are two locations for station HL\_07. In 2010, there was a shift to a location slightly southwest which is offset from the transect. The history of the reasoning is unknown, but it is suspected that the change occurred because of mooring placement. The transect polygon was constructed using the the location used since the inception of AZMP to 2010, but a station polygon was created for the second location.
+
+## Minimum criteria
+
+The AZMP is, relative to climate timescales, young, with program sampling occurring for only 23 of the 30 years in the most recent reference period (1991 to 2020), and sampling covering even less of the previous reference period (1981 to 2010). To ensure that each station’s climatology was calculated with adequate coverage, a minimum criterion was set. The minimum of at least one occupation for any 10 years within the 30-year periods was used. 
+
+## Vertical binning
+
+Defined depth bins are every 10 m from 0 to 90 m with a tolerance of 5 m, then a bin every 20 m from 100 to 440 m with a tolerance of 10 m, and a bin every 100 m from 500 to 3000 m with a tolerance of 50 m. The 0 to 10m bin was omitted from the analysis due to relatively low data coverage and quality. The maximum depth bin for each station is the closest bin to the median of the maximum pressure value from all profiles for a given climatology reference period. Therefore, in some cases for the climatology profile plots it will appear that data is available deeper than calculated.
+
+## Handling insufficient sampling
+
+For some stations, there is insufficient sampling to produce a seasonal climatology profile, but adjacent stations will have sufficient coverage. In these cases, when the transect climatology is smoothed in distance, the closest smoothed profile is used. To obtain a smooth profile, the seasonal climatology profiles are combined to create a section. From here, the section is gridded to the defined depth bins. The gridded section is then smoothed in both the horizontal, or distance along transect, and vertical, or depth, coordinates using the Barnes interpolation scheme. Provided to the Barnes interpolation scheme are influence ranges and grids for distance and depth. For distance, the influence range is half the median of the station spacing, in kilometers, rounded to the nearest multiple of five, and multiplied by a factor of 1.4. For Louisbourg and Halifax, the influence range is multiplied by a factor 2.5 to account for non-constant station spacing. The grid for the distance is a sequence from 0 to the maximum distance along the transect plus 1.5 of the influence distance, increasing by half the influence distance. For depth, the influence range was set to 10m. The distance grid was a sequence from 5 to the maximum depth across the section, increasing by the influence distance. This produces a section of interpolated stations that are finer in resolution in both coordinates. A list of the stations, climatology reference period, and season that a smoothed climatology had to be used are provided in Table \@ref(tab:noClimatology).

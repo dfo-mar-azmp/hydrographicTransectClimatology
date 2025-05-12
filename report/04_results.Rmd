@@ -1,0 +1,514 @@
+# Results
+The data query exercise to obtain data to fill the time series prior to the implementation of the AZMP resulted in sparse data coverage. Therefore, when comparing the two climatology reference periods, 1981 to 2010 and 1991 to 2020, it should be noted that the earlier climatology period can contain up to ten years less data than the more recent period, and that it is biased to the later half, specifically years 1997 to 2010.
+
+```{r resultsNStns, echo=FALSE, message=FALSE}
+makeDirs <<- FALSE
+source('../analysis/00_setupFile.R')
+# load data frame that has the number of stations prior to 1997
+#  added to the time series from datat query
+# this was created in 99_transectSamplingFrequency.R [20210419]
+load(paste('../analysis', destDirData, 'nStnsPriorTo1997.rda', sep = '/'))
+```
+
+## Cabot Strait
+
+### Spring 
+
+For both climatology reference periods, all stations were sampled sufficiently (Figure \@ref(fig:cabotStraitSampling)). Occupation of any station prior to the implementation of the AZMP is sparse, with `r dfstn[['nstn']][dfstn[['transect']] == 'cabotStrait' & dfstn[['season']] == 'spring']` added from the data query. Occupation of the stations generally occurred in the middle two weeks, April 15 to May 01, of the seasonal period. 
+
+```{r resultsCabotStraitSpring, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'cabotStrait'
+seasonlook <- 'spring'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+
+# 1. which depths of temperature anomaly are negative, and the values
+df <- lapply(profiles, function(k) {ok <- k[['temperatureAnomaly']] < 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+T <- lapply(profiles, function(k) k[['temperatureAnomaly']][k[['temperatureAnomaly']] < 0])
+p <- lapply(profiles, function(k) k[['pressure']][k[['temperatureAnomaly']] < 0])
+Trange <- range(unlist(T))
+prange <- range(unlist(p))
+
+# 2. which depths and temperature anomaly are positive below the negative values
+dfp <- list()
+cnt <- 1
+for (i in 1:length(profiles)){
+   k <- profiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   if(any(ok)){
+    d <- data.frame(station = k[['stationName']],
+              anomaly = k[['temperatureAnomaly']][ok],
+              pressure = k[['pressure']][ok])
+    dfp[[cnt]] <- d[d[['pressure']] > max(df[[i]][['pressure']]), ] 
+    cnt <- cnt + 1
+   }
+}
+Tw <- unlist(lapply(dfp, function(k) k[['anomaly']]))
+pw <- unlist(lapply(dfp, function(k) k[['pressure']]))
+
+# 3. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')))
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')))
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')))
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+
+```
+
+
+Climatology profiles at each station are presented (Figures \ref{cabotStrait_spring_CS01}, \ref{cabotStrait_spring_CS02}, \ref{cabotStrait_spring_CS03}, \ref{cabotStrait_spring_CS04}, \ref{cabotStrait_spring_CS05}, \ref{cabotStrait_spring_CS06}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. Across the entire transect, in depth ranges of `r prange[1]` to `r prange[2]` m, waters are colder, up to `r abs(round(Trange[1],2))`$^\circ$C (Figure \@ref(fig:cabotStraitSpring)). Below `r prange[2]`m, temperature is warmer up to `r round(max(Tw),2)`$^\circ$C, with a greater difference on the eastern side of the strait.
+
+### Fall
+
+For the fall, all stations were sampled sufficiently for both climatology reference periods (Figure \@ref(fig:cabotStraitSampling)). Occupation of any station prior to the implementation of the AZMP is sparse, with `r dfstn[['nstn']][dfstn[['transect']] == 'cabotStrait' & dfstn[['season']] == 'fall']` occupations added from the data query, which added almost an entire transect occupation in 1995. Occupation of the stations is spread throughout the defined season, except no occupations occurred in the first week.
+
+```{r resultsCabotStraitFall, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'cabotStrait'
+seasonlook <- 'fall'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+
+# 1. which depths of temperature anomaly are negative, and the values
+df <- lapply(profiles, function(k) {ok <- k[['temperatureAnomaly']] < 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+T <- lapply(profiles, function(k) k[['temperatureAnomaly']][k[['temperatureAnomaly']] < 0])
+p <- lapply(profiles, function(k) k[['pressure']][k[['temperatureAnomaly']] < 0])
+Trange <- range(unlist(T))
+prange <- range(unlist(p))
+
+# 2. which depths and temperature anomaly are positive below the negative values
+dfd <- dfs <- list()
+for (i in 1:length(profiles)){
+   k <- profiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   d <- data.frame(station = k[['stationName']],
+              anomaly = k[['temperatureAnomaly']][ok],
+              pressure = k[['pressure']][ok])
+   dfd[[i]] <- d[d[['pressure']] > max(df[[i]][['pressure']]), ]
+   dfs[[i]] <- d[d[['pressure']] < min(df[[i]][['pressure']]), ]
+}
+Ts <- unlist(lapply(dfs, function(k) k[['anomaly']]))
+ps <- unlist(lapply(dfs, function(k) k[['pressure']]))
+
+Td <- unlist(lapply(dfd, function(k) k[['anomaly']]))
+pd <- unlist(lapply(dfd, function(k) k[['pressure']]))
+
+# 3. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')))
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')))
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')))
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{cabotStrait_fall_CS01}, \ref{cabotStrait_fall_CS02}, \ref{cabotStrait_fall_CS03}, \ref{cabotStrait_fall_CS04}, \ref{cabotStrait_fall_CS05}, \ref{cabotStrait_fall_CS06}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. In the top `r max(ps)`m, temperatures are up to `r round(max(Ts), 2)`$^\circ$C higher, with more higher differences on the western side (Figure \@ref(fig:cabotStraitFall)). This explains the near surface lower density across almost the entire transect. Similarly to the changes in the spring, conditions have changed between depths `r min(prange)` to `r max(prange)`m. The temperature is consistently lower across the transect, up to `r round(abs(min(Trange)), 2)`$^\circ$C. Below `r max(prange)`m,  temperatures are greater, up to `r round(max(Td), 2)`$^\circ$C, throughout the rest of the water column.
+
+
+## Louisbourg
+
+### Spring
+
+For the two climatology reference periods, each station was sampled sufficiently with the exception of LL\_09 (Figure \@ref(fig:louisbourgSampling)). There was insufficient amount of sampling to create a meaningful 1981 to 2010 climatology for the purposes of comparison. However, it was filled using the smoothed profile. Station occupations prior to the beginning of AZMP was sparse, with a total of `r dfstn[['nstn']][dfstn[['transect']] == 'louisbourg' & dfstn[['season']] == 'spring']` added from the data query. Similar to Cabot Strait, occupation of the stations generally occurred in the middle two weeks of the seasonal period.
+
+```{r resultsLouisbourgSpring, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'louisbourg'
+seasonlook <- 'spring'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+waterDepth <- lapply(profiles, function(k) max(k[['pressure']]))
+okdeep <- waterDepth > 300
+
+# 1. depths that temperature anomaly is positive for the slope and off slope
+df <- lapply(profiles[okdeep], function(k) {ok <- k[['temperatureAnomaly']] > 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+T <- lapply(profiles[okdeep], function(k) k[['temperatureAnomaly']][k[['temperatureAnomaly']] > 0])
+p <- lapply(profiles[okdeep], function(k) k[['pressure']][k[['temperatureAnomaly']] > 0])
+S <- lapply(profiles[okdeep], function(k) k[['salinityAnomaly']][k[['salinityAnomaly']] > 0])
+pS <- lapply(profiles[okdeep], function(k) k[['pressure']][k[['salinityAnomaly']] > 0]) 
+Trange <- range(unlist(T))
+prange <- range(unlist(p))
+Srange <- range(unlist(S))
+pSrange <- range(unlist(pS))
+
+# 2. which depths and temperature anomaly are positive on the shelf
+dfs <- list()
+shelfprofiles <- profiles[!okdeep]
+for (i in 1:length(shelfprofiles)){
+   k <- shelfprofiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   if(!any(ok)){
+      d <- data.frame(station = NA,
+                      anomaly = NA,
+                      pressure = NA)
+   } else {
+      d <- data.frame(station = k[['stationName']],
+                      anomaly = k[['temperatureAnomaly']][ok],
+                      pressure = k[['pressure']][ok])
+   }
+
+   dfs[[i]] <- d
+}
+Ts <- unlist(lapply(dfs, function(k) k[['anomaly']]))
+ps <- unlist(lapply(dfs, function(k) k[['pressure']]))
+
+# 3. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')))
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')))
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')))
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{louisbourg_spring_LL01}, \ref{louisbourg_spring_LL02}, \ref{louisbourg_spring_LL03}, \ref{louisbourg_spring_LL04}, \ref{louisbourg_spring_LL05}, \ref{louisbourg_spring_LL06}, \ref{louisbourg_spring_LL07}, \ref{louisbourg_spring_LL08}, \ref{louisbourg_spring_LL09}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$ (Figure \@ref(fig:louisbourgSpring)). In general, bottom temperatures along the shelf, in the general area of Misaine Bank, are up to `r round(max(Ts, na.rm = TRUE), 2)`$^\circ$C warmer. Waters on and beyond the slope are up to `r round(max(Trange), 2)`$^\circ$C warmer, and more salty, up to `r round(max(Srange), 2)`.
+
+### Fall
+
+There was sufficient sampling to create a meaningful climatology for both reference periods (Figure \@ref(fig:louisbourgSampling)). Note that AZMP missions for years 2001 and 2017 were outside of the defined seasonal period. An additional `r dfstn[['nstn']][dfstn[['transect']] == 'louisbourg' & dfstn[['season']] == 'fall']` were added to the time series from the data query. Similar to Cabot Strait, occupation of the stations is spread throughout the seasonal period, with no occupations in the first week.
+
+```{r resultsLouisbourgFall, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'louisbourg'
+seasonlook <- 'fall'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+waterDepth <- lapply(profiles, function(k) max(k[['pressure']]))
+okdeep <- waterDepth > 300
+
+# 1. depths that temperature anomaly is negative on the shelf
+df <- lapply(profiles[!okdeep], function(k) {ok <- k[['temperatureAnomaly']] < 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+T <- do.call('rbind', df)[['anomaly']]
+p <- do.call('rbind', df)[['pressure']]
+Trange <- range(unlist(T))
+prange <- range(unlist(p))
+
+# 2. which depths and temperature anomaly are positive below and above the negative values
+dfd <- dfs <- list()
+shelfprofiles <- profiles[!okdeep]
+for (i in 1:length(shelfprofiles)){
+   k <- shelfprofiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   d <- data.frame(station = k[['stationName']],
+              anomaly = k[['temperatureAnomaly']][ok],
+              pressure = k[['pressure']][ok])
+   dfd[[i]] <- d[d[['pressure']] > max(df[[i]][['pressure']]), ]
+   dfs[[i]] <- d[d[['pressure']] < min(df[[i]][['pressure']]), ]
+}
+Ts <- unlist(lapply(dfs, function(k) k[['anomaly']]))
+ps <- unlist(lapply(dfs, function(k) k[['pressure']]))
+
+Td <- unlist(lapply(dfd, function(k) k[['anomaly']]))
+pd <- unlist(lapply(dfd, function(k) k[['pressure']]))
+
+
+
+# 2. which depths and temperature anomaly are positive on the slope and deeper
+dfslope <- lapply(profiles[okdeep], function(k) {ok <- k[['temperatureAnomaly']] > 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+Tslope <- do.call('rbind', dfslope)[['anomaly']]
+pslope <- do.call('rbind', dfslope)[['pressure']]
+Tsloperange <- range(unlist(Tslope))
+psloperange <- range(unlist(pslope))
+S <- unlist(lapply(profiles[okdeep], function(k) k[['salinityAnomaly']][k[['salinityAnomaly']] > 0]))
+pS <- unlist(lapply(profiles[okdeep], function(k) k[['pressure']][k[['salinityAnomaly']] > 0]))
+
+# 3. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')))
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')))
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')))
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{louisbourg_fall_LL01}, \ref{louisbourg_fall_LL02}, \ref{louisbourg_fall_LL03}, \ref{louisbourg_fall_LL04}, \ref{louisbourg_fall_LL05}, \ref{louisbourg_fall_LL06}, \ref{louisbourg_fall_LL07}, \ref{louisbourg_fall_LL08}, \ref{louisbourg_fall_LL09}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. As in spring, there are clear shelf wide changes, as well as changes in the water properties on and beyond the slope (Figure \@ref(fig:louisbourgFall)). On the shelf, waters in the upper `r max(ps)`m are up to `r round(max(Ts), 2)`$^\circ$C warmer. Similar to Cabot Strait, below the surface layer, temperatures for depths `r min(p)` to `r max(p)`m are cooler, up to `r round(abs(min(T)), 2)`$^\circ$C. Deeper shelf waters below `r max(p)`m are warmer, up to `r round(max(Td),2)`$^\circ$C. On and beyond the slope, waters are warmer throughout the entire water column, up to `r round(max(Tslope),2)`$^\circ$C, as with salinity, up to `r round(max(S), 2)`.
+
+## Halifax
+
+### Spring
+
+Similar to the other transects, each core station, those being the integer value stations, were sampled enough to create a station climatology for both climatology reference periods (Figure \@ref(fig:halifaxSampling)). The four decimal stations (HL_3.3, HL_5.5, HL_6.3, HL_6.7) were added to the program in 2011, therefore, there was insufficient coverage to create a station climatology for both periods, but were filled from the smoothed climatology. An additional `r dfstn[['nstn']][dfstn[['transect']] == 'halifaxInshore' & dfstn[['season']] == 'spring']` profiles were added from the data query to fill the time series, including occupations of all integer stations in 1996. Sampling timing was primarily during the second and third week of the defined season and the last week. The temporal coverage for both HL_01 and HL_02 is throughout the entire seasonal period.
+
+```{r resultsHalifaxSpring, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'halifaxInshore'
+seasonlook <- 'spring'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+waterDepth <- lapply(profiles, function(k) max(k[['pressure']]))
+okdeep <- waterDepth > 300
+
+# 1. depths that temperature anomaly is positive for the slope and off slope
+df <- lapply(profiles[okdeep], function(k) {ok <- k[['temperatureAnomaly']] > 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+T <- lapply(profiles[okdeep], function(k) k[['temperatureAnomaly']][k[['temperatureAnomaly']] > 0])
+p <- lapply(profiles[okdeep], function(k) k[['pressure']][k[['temperatureAnomaly']] > 0])
+S <- lapply(profiles[okdeep], function(k) k[['salinityAnomaly']][k[['salinityAnomaly']] > 0])
+pS <- lapply(profiles[okdeep], function(k) k[['pressure']][k[['salinityAnomaly']] > 0]) 
+Trange <- range(unlist(T),na.rm = TRUE)
+prange <- range(unlist(p), na.rm = TRUE)
+Srange <- range(unlist(S), na.rm = TRUE)
+pSrange <- range(unlist(pS), na.rm = TRUE)
+
+# 2. which depths and temperature anomaly are positive on the shelf
+dfs <- list()
+shelfprofiles <- profiles[!okdeep]
+for (i in 1:length(shelfprofiles)){
+   k <- shelfprofiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   if(!any(ok)){
+      d <- data.frame(station = NA,
+                      anomaly = NA,
+                      pressure = NA)
+   } else {
+      d <- data.frame(station = k[['stationName']],
+                      anomaly = k[['temperatureAnomaly']][ok],
+                      pressure = k[['pressure']][ok])
+   }
+
+   dfs[[i]] <- d
+}
+Ts <- unlist(lapply(dfs, function(k) k[['anomaly']]))
+ps <- unlist(lapply(dfs, function(k) k[['pressure']]))
+
+# 3. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')), na.rm = TRUE)
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')), na.rm = TRUE)
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')), na.rm = TRUE)
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{halifaxInshore_spring_HL01}, \ref{halifaxInshore_spring_HL02}, \ref{halifaxInshore_spring_HL03}, \ref{halifaxInshore_spring_HL3.3}, \ref{halifaxInshore_spring_HL04}, \ref{halifaxInshore_spring_HL05}, \ref{halifaxInshore_spring_HL06}, \ref{halifaxInshore_spring_HL6.3}, \ref{halifaxInshore_spring_HL6.7}, \ref{halifaxInshore_spring_HL07}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. Overall, the temperature across the entire transect increased (Figure \@ref(fig:halifaxSpring)). Compared to the conditions upstream on the Louisbourg transect, deeper shelf waters are up to `r round(max(Ts))`$^\circ$C warmer, and waters near shore remained similar. Slope and off slope water temperature is greater, up to `r round(max(Trange))`$^\circ$C. Salinity values are greater in the off slope waters, up to `r sprintf('%.2f', max(Srange))`, similar to Louisbourg. 
+
+### Fall 
+
+As in the spring, each core station, those being the integer value stations, were sampled enough to create a station climatology for both reference periods (Figure \@ref(fig:halifaxSampling)). For the decimal stations, only one, HL\_5.5 was sufficiently sampled for the 1991 to 2020 climatology period. The remaining were filled from the smoothed climatology. The most number of stations were identified from the data query to fill the time series, with a total of `r dfstn[['nstn']][dfstn[['transect']] == 'halifaxInshore' & dfstn[['season']] == 'fall']`. With most of the additional stations from an occupation of almost every integer station twice in year 1996.
+
+```{r resultsHalifaxFall, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'halifaxInshore'
+seasonlook <- 'fall'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+waterDepth <- lapply(profiles, function(k) max(k[['pressure']]))
+okdeep <- waterDepth > 300
+
+# 1. depths that temperature anomaly is negative on the shelf
+shelfprofiles <- profiles[!okdeep]
+df <- list()
+for(i in 1:length(shelfprofiles)){
+   k <- shelfprofiles[[i]]
+   ok <- k[['temperatureAnomaly']] < 0
+   if(!any(ok)){
+      d <- data.frame(station = NA,
+                      anomaly = NA,
+                      pressure = NA)
+   } else {
+      d <- data.frame(station = k[['stationName']],
+                      anomaly = k[['temperatureAnomaly']][ok],
+                      pressure = k[['pressure']][ok])
+   }
+   df[[i]] <- d
+}
+
+T <- do.call('rbind', df)[['anomaly']]
+p <- do.call('rbind', df)[['pressure']]
+Trange <- range(unlist(T), na.rm = TRUE)
+prange <- range(unlist(p), na.rm = TRUE)
+
+# 2. which depths and temperature anomaly are positive below and above the negative values
+dfd <- dfs <- list()
+shelfprofiles <- profiles[!okdeep]
+for (i in 1:length(shelfprofiles)){
+   k <- shelfprofiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   d <- data.frame(station = k[['stationName']],
+              anomaly = k[['temperatureAnomaly']][ok],
+              pressure = k[['pressure']][ok])
+   dfd[[i]] <- d[d[['pressure']] > max(df[[i]][['pressure']]), ]
+   dfs[[i]] <- d[d[['pressure']] < min(df[[i]][['pressure']]), ]
+}
+Ts <- unlist(lapply(dfs, function(k) k[['anomaly']]))
+ps <- unlist(lapply(dfs, function(k) k[['pressure']]))
+
+Td <- unlist(lapply(dfd, function(k) k[['anomaly']]))
+pd <- unlist(lapply(dfd, function(k) k[['pressure']]))
+
+
+
+# 2. which depths and temperature anomaly are positive on the slope and deeper
+dfslope <- lapply(profiles[okdeep], function(k) {ok <- k[['temperatureAnomaly']] > 0;
+                                    data.frame(station = k[['stationName']],
+                                               anomaly = k[['temperatureAnomaly']][ok],
+                                               pressure = k[['pressure']][ok])})
+Tslope <- do.call('rbind', dfslope)[['anomaly']]
+pslope <- do.call('rbind', dfslope)[['pressure']]
+Tsloperange <- range(unlist(Tslope), na.rm = TRUE)
+psloperange <- range(unlist(pslope), na.rm = TRUE)
+S <- unlist(lapply(profiles[okdeep], function(k) k[['salinityAnomaly']][k[['salinityAnomaly']] > 0]))
+pS <- unlist(lapply(profiles[okdeep], function(k) k[['pressure']][k[['salinityAnomaly']] > 0]))
+# just want depth ranges that are shows on the plot
+okps <- pS < 300
+S <- S[okps]
+pS <- pS[okps]
+# 3. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')), na.rm = TRUE)
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')), na.rm = TRUE)
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')), na.rm = TRUE)
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{halifaxInshore_fall_HL01}, \ref{halifaxInshore_fall_HL02}, \ref{halifaxInshore_fall_HL03}, \ref{halifaxInshore_fall_HL3.3}, \ref{halifaxInshore_fall_HL04}, \ref{halifaxInshore_fall_HL05}, \ref{halifaxInshore_fall_HL06}, \ref{halifaxInshore_fall_HL6.3}, \ref{halifaxInshore_fall_HL6.7}, \ref{halifaxInshore_fall_HL07}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. Similar to Louisbourg, there are distinct changes in water properties along the shelf and waters off the slope (Figure \@ref(fig:halifaxFall)). Along the shelf, near surface waters, down to `r max(ps, na.rm = TRUE)` m, temperatures are warmer up to `r round(max(Ts, na.rm = TRUE), 2)`$^\circ$C. Below the near-surface waters, as on the Louisbourg line, waters between depths `r prange[1]` to `r prange[2]`m are cooler, up to `r round(abs(min(Trange)),2)`$^\circ$C. For deeper waters on the shelf, temperatures are warmer, up to `r round(max(Td, na.rm = TRUE), 2)`$^\circ$C. At the edge of the shelf, on the slope, and beyond, waters are warmer throughout the entire water column, up to `r round(max(Tsloperange, na.rm = TRUE))`$^\circ$C, and salinity is greater in mid-depth ranges, specifically `r min(pS, na.rm = TRUE)` to `r max(pS, na.rm = TRUE)`m, up to `r round(max(S, na.rm = TRUE), 2)`.
+
+## Browns Bank
+
+### Spring
+
+As for all other core transects, for the two climatology reference periods at each station, sampling was sufficient for the spring (Figure \@ref(fig:brownsBankSampling)). Occupation of any station along the line prior to the beginning of AZMP was sparse, with a total of `r dfstn[['nstn']][dfstn[['transect']] == 'brownsBank' & dfstn[['season']] == 'spring']` stations found from the data query. In the defined seasonal period, sampling of the stations generally occurred in the first two weeks.
+
+```{r resultsBrownsBankSpring, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'brownsBank'
+seasonlook <- 'spring'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+
+# 1. which depths and temperature anomaly are positive below the negative values
+dfp <- list()
+for (i in 1:length(profiles)){
+   k <- profiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   d <- data.frame(station = k[['stationName']],
+              anomaly = k[['temperatureAnomaly']][ok],
+              pressure = k[['pressure']][ok])
+   dfp[[i]] <- d
+}
+Tw <- unlist(lapply(dfp, function(k) k[['anomaly']]))
+pw <- unlist(lapply(dfp, function(k) k[['pressure']]))
+# 2. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')), na.rm = TRUE)
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')), na.rm = TRUE)
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')), na.rm = TRUE)
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{brownsBank_spring_BBL01}, \ref{brownsBank_spring_BBL02}, \ref{brownsBank_spring_BBL03}, \ref{brownsBank_spring_BBL04}, \ref{brownsBank_spring_BBL05}, \ref{brownsBank_spring_BBL06}, \ref{brownsBank_spring_BBL07}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. Temperature is greater across the entire section, with the largest differences off the shelf break. 
+
+### Fall
+
+Similar to the spring, for the two climatology reference periods at each station, sampling is sufficient (Figure \@ref(fig:brownsBankSampling)). There was a total of `r dfstn[['nstn']][dfstn[['transect']] == 'brownsBank' & dfstn[['season']] == 'fall']` stations found from the data query, with half identified at BBL\_01 and BBL\_02. Sampling generally spanned the middle two weeks of the season, with some sampling in the last two weeks.
+
+```{r resultsBrownsBankFall, echo=FALSE, message=FALSE}
+load('../analysis/99_codeToHelpWriteClimatologyDifferences.rda')
+transectlook <- 'brownsBank'
+seasonlook <- 'fall'
+ok <- which(transect %in% transectlook & season %in% seasonlook & climatologyYear %in% 'difference' & hasAnomaly)
+profiles <- climatology[[ok]][['section']][['station']]
+
+# 1. which depths and temperature anomaly are positive below the negative values
+dfp <- list()
+for (i in 1:length(profiles)){
+   k <- profiles[[i]]
+   ok <- k[['temperatureAnomaly']] > 0
+   d <- data.frame(station = k[['stationName']],
+              anomaly = k[['temperatureAnomaly']][ok],
+              pressure = k[['pressure']][ok])
+   dfp[[i]] <- d
+}
+Tw <- unlist(lapply(dfp, function(k) k[['anomaly']]))
+pw <- unlist(lapply(dfp, function(k) k[['pressure']]))
+
+# 2. Where is the density anomaly less than 0
+dfst <- list()
+for (i in 1:length(profiles)){
+   k <- profiles[[i]]
+   ok <- k[['sigmaThetaAnomaly']] < 0
+      if(!any(ok)){
+      d <- data.frame(station = NA,
+                      anomaly = NA,
+                      pressure = NA)
+   } else {
+    d <- data.frame(station = k[['stationName']],
+                 anomaly = k[['sigmaThetaAnomaly']][ok],
+                 pressure = k[['pressure']][ok])
+   }
+   dfst[[i]] <- d
+}
+ST <- unlist(lapply(dfst, function(k) k[['anomaly']]))
+STp <- unlist(lapply(dfst, function(k) k[['pressure']]))
+# near surface
+ok <- STp < 100
+ST <- ST[ok]
+STp <- STp[ok]
+
+# 3. Where is the salinity anomaly greater than 0
+dfs <- list()
+for (i in 1:length(profiles)){
+   k <- profiles[[i]]
+   ok <- k[['salinityAnomaly']] > 0
+      if(!any(ok)){
+      d <- data.frame(station = NA,
+                      anomaly = NA,
+                      pressure = NA)
+   } else {
+    d <- data.frame(station = k[['stationName']],
+                 anomaly = k[['salinityAnomaly']][ok],
+                 pressure = k[['pressure']][ok])
+   }
+   dfs[[i]] <- d
+}
+S <- unlist(lapply(dfs, function(k) k[['anomaly']]))
+Sp <- unlist(lapply(dfs, function(k) k[['pressure']]))
+# near surface
+ok <- Sp < 100
+S <- S[ok]
+Sp <- Sp[ok]
+# 4. Range of difference for all variables
+Trangeall <- range(unlist(lapply(profiles, '[[', 'temperatureAnomaly')), na.rm = TRUE)
+Trangealltext <- paste0(ifelse(Trangeall < 0, '-', '+'), sprintf('%.2f', Trangeall))
+Srangeall <- range(unlist(lapply(profiles, '[[', 'salinityAnomaly')), na.rm = TRUE)
+Srangealltext <- paste0(ifelse(Srangeall < 0, '-', '+'), sprintf('%.2f', Srangeall))
+STrangeall <- range(unlist(lapply(profiles, '[[', 'sigmaThetaAnomaly')), na.rm = TRUE)
+STrangealltext <- paste0(ifelse(STrangeall < 0, '-', '+'), sprintf('%.2f', STrangeall))
+```
+
+Climatology profiles at each station are presented (Figures \ref{brownsBank_fall_BBL01}, \ref{brownsBank_fall_BBL02}, \ref{brownsBank_fall_BBL03}, \ref{brownsBank_fall_BBL04}, \ref{brownsBank_fall_BBL05}, \ref{brownsBank_fall_BBL06}, \ref{brownsBank_fall_BBL07}). Across the entire transect, temperature changes between the two climatology reference periods ranges from `r Trangealltext[1]`$^\circ$C to `r Trangealltext[2]`$^\circ$C, salinity ranges from  `r Srangealltext[1]` to `r Srangealltext[2]`, and density ranges from `r STrangealltext[1]`kg/m$^\text{3}$ to `r STrangealltext[2]`kg/m$^\text{3}$. Compared to the other core transects, changes along the shelf portion of the transect are different. Across the entire transect, temperatures are up to `r round(max(Tw, na.rm = TRUE), 2)`$^\circ$C greater (Figure \@ref(fig:brownsBankFall)). This greater temperature difference is the main driver for the negative density differences, up to `r round(max(abs(ST)),2)`kg/m$^3$, for the near shore stations in the top `r round(max(abs(STp), na.rm = TRUE),2)`m. In the top `r max(Sp, na.rm = TRUE)`m, in the middle of the shelf to off the slope, salinity has increased up to `r round(max(S, na.rm = TRUE),2)`. 
+
+## Northeast Channel
+
+### Spring
+
+There was insufficient sampling to meet the minimum criteria for the spring 1981 to 2010 climatology for the transect based on the requirements outlined earlier, with the exception of NEC\_03. There was enough data coverage to create a full transect climatology for the 1991 to 2020 reference period (Figure \@ref(fig:northeastChannelSampling)). Sampling of the stations generally occurred during the earlier portion of the defined seasonal period, particularly during weeks two and three.
+
+Climatology profiles at each station are presented (Figures \ref{northEastChannel_spring_NEC01}, \ref{northEastChannel_spring_NEC02}, \ref{northEastChannel_spring_NEC03}, \ref{northEastChannel_spring_NEC04}, \ref{northEastChannel_spring_NEC05}, \ref{northEastChannel_spring_NEC06}, \ref{northEastChannel_spring_NEC07}, \ref{northEastChannel_spring_NEC08}, \ref{northEastChannel_spring_NEC09}, \ref{northEastChannel_spring_NEC10}). Resulting mean profiles depicted in a section plot are presented (Figure \@ref(fig:northeastChannelSpring)).
+
+### Fall
+
+There was insufficient sampling to create a meaningful fall 1981 to 2010 climatology for the entire transect, with the exception of NEC\_09, based on the requirements outlined earlier, Figure \@ref(fig:northeastChannelSampling). There was sufficient sampling for the 1991 to 2020 climatology. Data coverage over the defined climatology season dates were primarily in the middle two weeks.
+
+Climatology profiles at each station are presented (Figures \ref{northEastChannel_fall_NEC01}, \ref{northEastChannel_fall_NEC02}, \ref{northEastChannel_fall_NEC03}, \ref{northEastChannel_fall_NEC04}, \ref{northEastChannel_fall_NEC05}, \ref{northEastChannel_fall_NEC06}, \ref{northEastChannel_fall_NEC07}, \ref{northEastChannel_fall_NEC08},\ref{northEastChannel_fall_NEC09}, \ref{northEastChannel_fall_NEC10}). Resulting mean profiles depicted in a section plot are presented in Figure \@ref(fig:northeastChannelFall).

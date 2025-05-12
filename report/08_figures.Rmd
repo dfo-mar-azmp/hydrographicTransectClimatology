@@ -1,0 +1,348 @@
+# Figures {#ref-figures}
+```{r analysisPath}
+path <- '../analysis'
+makeDirs <<- FALSE
+source(paste(path, '00_setupFile.R', sep = '/'))
+figurePath <- paste(path,
+                    gsub('\\.(.*)', '\\1', destDirFigures), sep = '/')
+```
+
+(ref:fig-mapOfAllStations) Map of stations, black dots, sampled during the AMZP since the beginning of the program. Red outline and labelled transects are core transects, and green are the ancillary transects.
+
+```{r mapOfAllStations, fig.cap = "(ref:fig-mapOfAllStations)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '04_mapOfAllArcStations.png', sep = '/'))
+```
+
+(ref:fig-samplingTimeRange) Sampling time ranges for the spring (left) and fall (right) missions. Vertical black dashed lines indicates the defined time ranges, 01 April to 15 May and 15 September to 31 October, for spring and fall respectively, for the climatology.
+
+```{r samplingTimeRange, fig.cap = "(ref:fig-samplingTimeRange)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '05_missionTimeRange_azmp.png', sep = '/'))
+```
+
+
+(ref:fig-transectSamplingFrequency) Atlantic Zone Monitoring Program data sampling frequency of each section, core and ancillary, divided by a thick black line, since 1997 for spring (left) and fall (right). A grey filled box indicates that the section was sampled, and the number indicates the number of stations occupied. A white filled box indicates that the section was not sampled. The number on the right axis indicates the number of times that the transect was occupied.
+
+```{r transectSamplingFrequency, fig.cap = "(ref:fig-transectSamplingFrequency)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '06_transectSamplingFrequency.png', sep = '/'))
+```
+
+(ref:fig-transectSamplingFrequencyExtraArchive) Archive data sampling frequency of each section, core and ancillary, divided by a thick black line, from year 1981 to 1996 for spring (left) and fall (right). A grey filled box indicates that the section was sampled, and the number indicates the number of stations identified. A white filled box indicates that the section was not sampled. The number on the right axis indicates the number of times that the transect was occupied.
+
+```{r transectSamplingFrequencyExtraArchive, fig.cap = "(ref:fig-transectSamplingFrequencyExtraArchive)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '07_transectSamplingFrequencyArchiveExtra.png', sep = '/'))
+```
+
+(ref:fig-transectSamplingFrequencyClimate) Climate database data sampling frequency of each section, core and ancillary, divided by a thick black line, from year 1981 to 1996 for (A) spring  and (B) fall . A grey filled box indicates that the section was sampled, and the number indicates the number of stations identified. A white filled box indicates that the section was not sampled. The number on the right axis indicates the number of times that the transect was occupied.
+
+```{r transectSamplingFrequencyClimate, fig.cap = "(ref:fig-transectSamplingFrequencyClimate)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '08_transectSamplingFrequencyClimate.png', sep = '/'))
+```
+
+<!-- Cabot Strait -->
+<!-- sampling -->
+(ref:fig-cabotStraitSampling) Map (top) with labelled stations for Cabot Strait. Sampling frequency for spring (middle left) and fall (middle right) at each station. A light red filled box indicates that the station was not sampled, reiterated by the number zero in the box. A light green filled box indicates that the station was sampled the expected number of times, which is one. A dark green filled box indicates that the station was sampled more than the expected number of times with the total number of occupations indicated in the box. The sampling timing, colour coded by year, for each station throughout the defined climatology date ranges for spring (bottom left) and fall (bottom right).
+
+
+```{r cabotStraitSampling, fig.cap = "(ref:fig-cabotStraitSampling)", out.width="90%"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '09_stationMapSamplingFrequencyAndTiming_cabotStrait.png', sep = '/'))
+```
+
+<!-- spring -->
+```{r cabotStraitSpringProfileFigures}
+<<analysisPath>>
+transect <- 'cabotStrait'
+season <- 'spring'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r cabotStraitSpringProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-cabotStraitSpring) Cabot Strait spring climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r cabotStraitSpring, out.width = "100%", fig.cap = "(ref:fig-cabotStraitSpring)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_cabotStrait_spring_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+<!-- fall -->
+
+```{r cabotStraitFallProfileFigures}
+<<analysisPath>>
+transect <- 'cabotStrait'
+season <- 'fall'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r cabotStraitFallProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-cabotStraitFall) Cabot Strait fall climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r cabotStraitFall, out.width="100%", fig.cap = "(ref:fig-cabotStraitFall)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_cabotStrait_fall_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+<!-- Louisbourg -->
+<!-- sampling -->
+(ref:fig-louisbourgSampling) Map (top) with labelled stations for Louisbourg. Sampling frequency for spring (middle left) and fall (middle right) at each station. A light red filled box indicates that the station was not sampled, reiterated by the number zero in the box. A light green filled box indicates that the station was sampled the expected number of times, which is one. A dark green filled box indicates that the station was sampled more than the expected number of times with the total number of occupations indicated in the box. The sampling timing, colour coded by year, for each station throughout the defined climatology date ranges for spring (bottom left) and fall (bottom right).
+
+
+```{r louisbourgSampling, fig.cap = "(ref:fig-louisbourgSampling)", out.width="90%"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '09_stationMapSamplingFrequencyAndTiming_louisbourg.png', sep = '/'))
+```
+
+<!-- spring -->
+```{r louisbourgSpringProfileFigures}
+<<analysisPath>>
+transect <- 'louisbourg'
+season <- 'spring'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r louisbourgSpringProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-louisbourgSpring) Louisbourg spring climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r louisbourgSpring, out.width="100%", fig.cap = "(ref:fig-louisbourgSpring)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_louisbourg_spring_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+<!-- fall -->
+```{r louisbourgFallProfileFigures}
+<<analysisPath>>
+transect <- 'louisbourg'
+season <- 'fall'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r louisbourgFallProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-louisbourgFall) Louisbourg fall climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r louisbourgFall, out.width="100%", fig.cap = "(ref:fig-louisbourgFall)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_louisbourg_fall_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+
+<!-- Halifax -->
+<!-- sampling -->
+(ref:fig-halifaxSampling) Map (top) with labelled stations for Halifax. Sampling frequency for spring (middle left) and fall (middle right) at each station. A light red filled box indicates that the station was not sampled, reiterated by the number zero in the box. A light green filled box indicates that the station was sampled the expected number of times, which is one. A dark green filled box indicates that the station was sampled more than the expected number of times with the total number of occupations indicated in the box. The sampling timing, colour coded by year, for each station throughout the defined climatology date ranges for spring (bottom left) and fall (bottom right).
+
+
+```{r halifaxSampling, fig.cap = "(ref:fig-halifaxSampling)", out.width="90%"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '09_stationMapSamplingFrequencyAndTiming_halifaxInshore.png', sep = '/'))
+```
+
+<!-- spring -->
+```{r halifaxSpringProfileFigures}
+<<analysisPath>>
+transect <- 'halifaxInshore'
+season <- 'spring'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationnum <- as.numeric(gsub('HL(.*)', '\\1', station))
+o <- order(stationnum)
+figures <- figures[o]
+station <- station[o]
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r halifaxSpringProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-halifaxSpring) Halifax spring climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r halifaxSpring, out.width="100%", fig.cap = "(ref:fig-halifaxSpring)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_halifaxInshore_spring_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+<!-- fall -->
+```{r halifaxFallProfileFigures}
+<<analysisPath>>
+transect <- 'halifaxInshore'
+season <- 'fall'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationnum <- as.numeric(gsub('HL(.*)', '\\1', station))
+o <- order(stationnum)
+figures <- figures[o]
+station <- station[o]
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r halifaxFallProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-halifaxFall) Halifax fall climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r halifaxFall, out.width="100%", fig.cap = "(ref:fig-halifaxFall)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_halifaxInshore_fall_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+
+<!-- Browns Bank -->
+<!-- sampling -->
+(ref:fig-brownsBankSampling) Map (top) with labelled stations for Browns Bank. Sampling frequency for spring (middle left) and fall (middle right) at each station. A light red filled box indicates that the station was not sampled, reiterated by the number zero in the box. A light green filled box indicates that the station was sampled the expected number of times, which is one. A dark green filled box indicates that the station was sampled more than the expected number of times with the total number of occupations indicated in the box. The sampling timing, colour coded by year, for each station throughout the defined climatology date ranges for spring (bottom left) and fall (bottom right).
+
+
+```{r brownsBankSampling, fig.cap = "(ref:fig-brownsBankSampling)", out.width="90%"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '09_stationMapSamplingFrequencyAndTiming_brownsBank.png', sep = '/'))
+```
+
+<!-- spring -->
+```{r brownsBankSpringProfileFigures}
+<<analysisPath>>
+transect <- 'brownsBank'
+season <- 'spring'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r brownsBankSpringProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-brownsBankSpring) Browns Bank spring climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r brownsBankSpring, out.width="100%", fig.cap = "(ref:fig-brownsBankSpring)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_brownsBank_spring_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+<!-- fall -->
+
+```{r brownsBankFallProfileFigures}
+<<analysisPath>>
+transect <- 'brownsBank'
+season <- 'fall'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r brownsBankFallProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (top left), salinity (top middle), and density (top right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1981 to 2010 (red) and 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles. Below are the difference, 1991 to 2020 minus 1981 to 2010, between the two climatology profiles and $\\pm$ 0.5SD for temperature (bottom left), salinity (bottom middle), and density (bottom right). Vertical thin black line denotes a difference of zero."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-brownsBankFall) Browns Bank fall climatology. The top row is the 1981 to 2010 climatology. The middle row is the 1991 to 2020 climatology. The bottom row is the quantized difference between the two. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+
+\begin{landscapepage}
+\begin{centering}
+```{r brownsBankFall, out.width="100%", fig.cap = "(ref:fig-brownsBankFall)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_brownsBank_fall_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+
+<!-- Northeast Channel -->
+<!-- sampling -->
+(ref:fig-northeastChannelSampling) Map (top) with labelled stations for Northeast Channel. Sampling frequency for spring (middle left) and fall (middle right) at each station. A light red filled box indicates that the station was not sampled, reiterated by the number zero in the box. A light green filled box indicates that the station was sampled the expected number of times, which is one. A dark green filled box indicates that the station was sampled more than the expected number of times with the total number of occupations indicated in the box. The sampling timing, colour coded by year, for each station throughout the defined climatology date ranges for spring (bottom left) and fall (bottom right).
+
+
+```{r northeastChannelSampling, fig.cap = "(ref:fig-northeastChannelSampling)", out.width="90%"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '09_stationMapSamplingFrequencyAndTiming_northEastChannel.png', sep = '/'))
+```
+
+<!-- spring -->
+```{r northeastChannelSpringProfileFigures}
+<<analysisPath>>
+transect <- 'northEastChannel'
+season <- 'spring'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r northeastChannelSpringProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick line) of temperature (left), salinity (middle), and density (right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-northeastChannelSpring) Northeast Channel spring 1991 to 2020 climatology. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r northeastChannelSpring, out.width="100%", fig.cap = "(ref:fig-northeastChannelSpring)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_northEastChannel_spring_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}
+
+<!-- fall -->
+```{r northeastChannelFallProfileFigures}
+<<analysisPath>>
+transect <- 'northEastChannel'
+season <- 'fall'
+figures <- list.files(path = figurePath, pattern = paste0('10_profileAndDifference_azmp_',transect, '_',season,'_.*wData.png'), full.names = TRUE)
+station <- gsub(paste0('10_profileAndDifference_azmp_', transect, '_', season, '_(.*)_wData\\.png'),'\\1', basename(figures))
+stationText <- gsub('([A-Z])(\\d+)', '\\1\\\\_\\2', station)
+```
+
+```{r northeasatChannelFallProfile, fig.cap=paste(sprintf("\\label{%s}", paste(transect, season, station, sep = '_')), "Station", stationText, season, "climatology profiles (thick lines) of temperature (left), salinity (middle), and density (right) with $\\pm$ 0.5 standard deviation (SD), indicated by shading, for the reference period 1991 to 2020 (blue). Thin lines, colour coded by year, are the data that were used to create the climatology profiles."),results='asis', message=FALSE, echo=FALSE, warning=FALSE}
+knitr::include_graphics(figures)
+```
+
+(ref:fig-northeastChannelFall) Northeast Channel fall 1991 to 2020 climatology. Black triangles indicate stations with respect to the distance along the transect. Station numbers are indicated above black triangles in the top row.
+\begin{landscapepage}
+\begin{centering}
+```{r northeastChannelFall, out.width="100%", fig.cap = "(ref:fig-northeastChannelFall)"}
+<<analysisPath>>
+knitr::include_graphics(path = paste(figurePath, '11_climatologyComparison_northEastChannel_fall_azmp_Filled.png', sep = '/'))
+```
+\end{centering}
+\end{landscapepage}

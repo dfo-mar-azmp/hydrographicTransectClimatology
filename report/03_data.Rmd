@@ -1,0 +1,38 @@
+# Data {#sec:data}
+
+## Atlantic Zone Monitoring Program, years 1997 to 2020
+
+Continuous downcast CTD data from the AZMP was obtained by mission name, Table \@ref(tab:missionIds). Quality control flags were applied to the data when available. Overall, the time range of the spring missions has remained within a six week period, and primarily in April, Figure \@ref(fig:samplingTimeRange). In contrast, the time ranges of the fall missions have progressively shifted from beginning in mid-October to mid-September, Figure \@ref(fig:samplingTimeRange).
+
+Sampling of the core sections occurred every year, notwithstanding mission constraints, Figure \@ref(fig:transectSamplingFrequency). Cabot Strait has a tendency to be dropped during spring missions due to sea ice. The most frequently sampled ancillary transects includes The Gully, Northeast Channel, and Roseway for both spring and fall. However, since 2010, The Gully, Northeast Channel, and St. Anns Bank have been most consistently sampled.
+
+The seasonal boundaries for building the climatology omitted some data. This includes roughly half of the 2001 spring survey, more than half of the 1999 fall survey, a portion of the 2001 and 2005 fall surveys, and the entirety of the 2017 fall survey (Figure \@ref(fig:samplingTimeRange)).
+
+
+## Archive, years 1981 to 1996
+
+```{r dataSummaryArchive, echo = FALSE, warning = FALSE, message = FALSE}
+# load data for writing paragraphs on amount of data retained
+load('../analysis/07_transectSamplingFrequencyArchiveExtra.rda')
+# 'df' will have the number of stations retained for both seasons
+# 'cnttbl' will have the number stations found for each transect for each season 
+cnttblsum <- lapply(cnttbl, sum)
+```
+
+The archived continuous downcast CTD data from BIO was investigated to determine if there was additional sampling that would meet the climatology requirements. This was completed by reading in all CTD data for each year from 1981 to 1996 then seeing if any of the stations fell within the defined six week period for each season as well as within the constructed transect polygons. If a station fulfilled both criteria, it was retained. Similar to the AZMP mission data, quality control flags were applied to the data when available.
+
+This data crawling exercise resulted in a total of `r dim(df)[1]` occupations, which accounted for `r cnttblsum[[1]]` unique stations for the `r names(cnttblsum)[1]`, and `r cnttblsum[[2]]` for the `r names(cnttblsum)[2]`, Figure \@ref(fig:transectSamplingFrequencyExtraArchive).
+
+## Climate database, years 1981 to 1996
+
+```{r dataSummaryClimate, echo = FALSE, warning = FALSE, message = FALSE}
+# load data for writing paragraphs on amount of data retained
+load('../analysis/08_transectSamplingFrequencyClimate.rda')
+# 'df' will have the number of stations retained for both seasons
+# 'cnttbl' will have the number stations found for each transect for each season 
+cnttblsum <- lapply(cnttbl, sum)
+```
+
+Another source of data used to attempt to fill in the time-series for each transect is the Climate database [@gregory2004]. First, data was queried from the database using the longitude range of 72$^\circ$W to 56$^\circ$W, latitude range of 41$^\circ$N to 48$^\circ$N, and during months March to May for the spring and September to November for the fall. Five data types were retained, this includes expendable bathythermograph (XB), tesac message (TE), CTD downcast (CD), batfish profiles (BF), and bottle measurements (BO). A profile was retained if it fell within one of the two seasonal periods and within a defined transect. 
+
+This data crawling exercise resulted in a total of `r dim(df)[1]` occupations, which accounted for `r cnttblsum[[1]]` unique stations for the `r names(cnttblsum)[1]`, and `r cnttblsum[[2]]` for the `r names(cnttblsum)[2]`, Figure \@ref(fig:transectSamplingFrequencyClimate).

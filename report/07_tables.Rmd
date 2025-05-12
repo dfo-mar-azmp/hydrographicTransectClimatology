@@ -1,0 +1,169 @@
+# Tables
+
+(ref:tab-stationCoordinates) Stations and their associated coordinates in decimal degrees. Station names are represented by the transect abbreviation and the associated station number. The abbreviation CS denotes Cabot Strait, LL Louisbourg, HL Halifax, BBL Browns Bank, and NEC Northeast Channel.
+
+```{r stationCoordinates, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+library(csasAtlPhys)
+stations <- c(cabotStraitStationPolygons,
+              louisbourgStationPolygons,
+              halifaxStationPolygons,
+              brownsBankStationPolygons,
+              northeastChannelStationPolygons)
+stationName <- unlist(lapply(stations, '[[', 'stationName'))
+stationLon <- unlist(lapply(stations, '[[', 'longitude'))
+stationLat <- unlist(lapply(stations, '[[', 'latitude'))
+# order stations by number for each transect
+transectName <- unlist(lapply(stations, '[[', 'transectName'))
+dftemp <- data.frame(station = stationName,
+                     transect = transectName,
+                     longitude = stationLon,
+                     latitude = stationLat)
+dfs <- split(dftemp, dftemp[['transect']])
+dfs <- lapply(dfs, function(k) k[order(as.numeric(gsub('\\w+\\_(\\d+)', '\\1', k[['station']]))), ])
+# order transects from north to south
+transectOrder <- c('cabotStrait', 'louisbourg', 'halifaxInshore', 'brownsBank', 'northeastChannel')
+o <- unlist(lapply(transectOrder, function(k) which(k == names(dfs))))
+dfs <- dfs[o]
+df <- do.call('rbind', dfs)
+table <- data.frame(Name = gsub('_', '\\\\_', df[['station']]), # have to add '\\' in front of the underscore
+                    Longitude = df[['longitude']],
+                    Latitude = df[['latitude']])
+csasdown::csas_table(x = table,
+                     caption = "(ref:tab-stationCoordinates)",
+                     align = 'ccc',
+                     format = 'latex')
+```
+(ref:tab-noClimatology) Stations, with their associated climatology period, season, and transect, that were insufficiently sampled to create a meaningful climatology. Note that the Northeast Channel stations for the 1981 to 2010 climatology period are omitted from this table as a majority of stations for both seasons were not sampled sufficiently.
+
+```{r noClimatology, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+makeDirs <<- FALSE
+source('../analysis/00_setupFile.R')
+load(paste('../analysis', destDirData, 'newClimatologyFilled.rda', sep = '/'))
+# make a data.frame of stations where a climatology couldn't be constructed
+hasMissingStn <- unlist(lapply(climatology, function(k) !is.null(k[['missingStations']])))
+missingStnDf <- do.call('rbind', lapply(climatology[hasMissingStn], function(k) k[['missingStations']]))
+# omit northEastChannel
+nec <- which(missingStnDf[['transect']] == 'northEastChannel')
+missingStnDf <- missingStnDf[-nec, ]
+# rename a few things to make it nice
+ok <- names(missingStnDf) == 'climYear'
+names(missingStnDf)[ok] <- 'climatology' 
+ok <- missingStnDf[['transect']] == 'halifaxInshore'
+missingStnDf[['transect']][ok] <- 'halifax'
+capitalize <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+      sep="", collapse=" ")
+}
+names(missingStnDf) <- sapply(names(missingStnDf), capitalize)
+missingStnDf[['Transect']] <- sapply(missingStnDf[['Transect']], capitalize)
+# define as factor for ordering
+missingStnDf[['Transect']] <- factor(x = missingStnDf[['Transect']], levels = c('Cabot Strait', 
+                                                                               'Louisbourg',
+                                                                               'Halifax',
+                                                                               'Browns Bank',
+                                                                               'Northeast Channel')
+                                                                               )
+missingStnDf[['Season']] <- sapply(missingStnDf[['Season']], capitalize)
+# define as factor for ordering
+missingStnDf[['Season']] <- factor(x = missingStnDf[['Season']], levels = c('Spring', 'Fall'))
+missingStnDf[['Station']] <- gsub('_', '\\\\_', missingStnDf[['Station']])
+missingStnDf[['Climatology']] <- as.character(missingStnDf[['Climatology']])
+missingStnDf <- missingStnDf[with(missingStnDf, order(Climatology, Season)), ]
+rownames(missingStnDf) <- NULL
+csasdown::csas_table(x = missingStnDf,
+                     caption = "(ref:tab-noClimatology)",
+                     align = paste(rep('c', dim(missingStnDf)[2]), collapse = ''),
+                     format = 'latex')
+```
+
+
+(ref:tab-missionIds) The year and mission names, following the defined Bedford Institute of Oceanography convention, for the two mission defined seasons, spring and fall. No entry in a given cell indicates that a mission did not occur for that given year.
+
+```{r missionIds, echo = FALSE, warning = FALSE, message = FALSE, results = 'asis'}
+library(xtable)
+library(oce)
+makeDirs <<- FALSE
+source('../analysis/00_setupFile.R')
+load(paste('../analysis', destDirData, 'ctd.rda', sep = '/'))
+
+fillTimeSeries <- function(x, xy){ # x is the variable, xy is the year in this case
+  dxy <- diff(xy)
+  if(any(dxy != 1)){
+    xnew <- x
+    xynew <- xy
+    idx <- 1:length(xy)
+    missing <- which(dxy != 1)
+    for(k in 1:length(missing)){
+      newidx <- missing[k] + seq(1, dxy[missing[k]] - 1, 1) / dxy[missing[k]]
+      addedyear <- xy[missing[k]] + seq(1, dxy[missing[k]] - 1, 1)
+      addvalue <- rep(NA, dxy[missing[k]] - 1)
+      xnew <- c(xnew, addvalue)
+      xynew <- c(xynew, addedyear)
+      idx <- c(idx, newidx)
+    }
+    o <- order(idx)
+    xnew <- xnew[o]
+    xynew <- xynew[o]
+  } else { # for those with no missing data
+    xnew <- x
+    xynew <- xy
+  }
+  return(list(x = xnew, xy = xynew))
+}
+
+startTime <- as.POSIXct(unlist(lapply(ctd, function(k) k[['startTime']])), origin = '1970-01-01', tz = 'UTC')
+mission <- unlist(lapply(ctd, function(k) k[['cruiseNumber']]))
+spring <- as.POSIXlt(startTime)$mon + 1 < 6
+fall <- as.POSIXlt(startTime)$mon + 1 > 6
+season <- vector(length = length(mission))
+season[spring] <- 'spring'
+season[fall] <- 'fall'
+df <- data.frame(time = startTime,
+                 year = as.POSIXlt(startTime)$year + 1900,
+                 mission = mission,
+                 season = season)
+df <- df[order(df[['time']]), ]
+sdf <- split(df, df[['season']])
+umission <- lapply(sdf, function(k) unique(k[,names(k) %in% c('year', 'mission')]))
+
+umission <- lapply(umission, function(k) {char <- t(apply(k, 1, as.character));
+                                          df <- as.data.frame(char);
+                                          names(df) <- names(k);
+                                          dffill <- fillTimeSeries(x = df[['mission']], xy = as.numeric(df[['year']]));
+                                          dfout <- data.frame(year = as.character(dffill$xy),
+                                                              mission = dffill$x);
+                                          dfout})
+table <- merge(umission[[1]], umission[[2]], by = 'year', all = TRUE)
+names(table)[!names(table) %in% 'year'] <- names(umission)
+# replace 'NA' values with ""
+table[is.na(table)] <- ""
+# below is kind of fragile and not good, but fine for this
+tableOrder <- unlist(lapply(c('year', 'spring', 'fall'), function(k) which(names(table) == k)))
+table <- table[,tableOrder]
+# capitalize names
+capitalize <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+      sep="", collapse=" ")
+}
+names(table) <- sapply(names(table), capitalize)
+
+# print(xtable(table,
+#       caption = 'The year and mission names, following the defined Bedford Institute of Oceanography convention, for the two mission defined seasons, spring and fall. No entry in a given cell indicates that a mission did not occur for that given year.',
+#       label = 't:missionIds',
+#       align = c( rep('| c ', times = dim(table)[2] + 1), '|')), # this is where xtable() gets closed
+#       include.rownames = F, sanitize.colnames.function = identity,
+#       sanitize.text.function = identity, hline.after = c(-1,0, dim(table)[1]),
+#       caption.placement = 'top', comment = FALSE)
+csasdown::csas_table(x = table,
+                     caption = "(ref:tab-missionIds)",
+                     align = 'cc',
+                     format = "latex",
+                     bold_header = FALSE # added textbf around table headers above
+                     #font_size = 8
+                     ) #%>%
+  # add_header_above(header = addHeaderAbove,
+  #                  bold = TRUE)
+
+```
