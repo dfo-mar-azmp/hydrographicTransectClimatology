@@ -11,10 +11,12 @@ checkArcPath <- function(file){
   if(file.exists(file)){
     source(file)
     if(!exists('arcPath')){
-      stop("Please define 'arcPath' in 00_arcPath.R")
+      stop(paste("Please define 'arcPath' in", file))
     }
   } else {
-    stop("File that defines 'arcPath' required, please create file 00_arcPath.R and define 'arcPath'.")
+    stop(paste(file, 'does not exist.',
+               "Please create the file and define 'arcPath'.",
+               "See README.md for details."))
   }
 }
 ## check
