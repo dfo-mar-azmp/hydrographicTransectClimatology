@@ -5,8 +5,9 @@ rmd_files: ["index.Rmd",
             "03_data.Rmd",
             "04_results.Rmd",
             "05_dataAccess.Rmd",
-            "06_bibliography.Rmd",
-            "07_tables.Rmd",
-            "08_figures.Rmd"
+            "06_acknowledgements.Rmd",
+            "07_bibliography.Rmd",
+            "08_tables.Rmd",
+            "09_figures.Rmd"
             ]
 delete_merged_file: true
