@@ -3,14 +3,22 @@ library(csasAtlPhys)
 if(!exists('makeDirs')){
   makeDirs <- TRUE
 }
-# !! define path to archive !!
-arcPath <- NULL
-checkArcPath <- function(path){
-  if(is.null(path)){
-    stop("Path to Archive data required, please add in 00_setupFile.R")
+# load file that defines arcPath
+## define file
+arcPathFile <- '00_arcPath.R'
+## function to check
+checkArcPath <- function(file){
+  if(file.exists(file)){
+    source(file)
+    if(!exists('arcPath')){
+      stop("Please define 'arcPath' in 00_arcPath.R")
+    }
+  } else {
+    stop("File that defines 'arcPath' required, please create file 00_arcPath.R and define 'arcPath'.")
   }
 }
-checkArcPath(path = arcPath)
+## check
+checkArcPath(file = arcPathFile)
 # set climatology ranges for various programs
 fakeYear <- 2020
 # azmp

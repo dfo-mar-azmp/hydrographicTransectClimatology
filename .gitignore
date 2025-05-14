@@ -58,3 +58,6 @@ analysis/figures
 
 # any data
 analysis/data
+
+# specific files that define sensitive info
+analysis/00_arcPath.R
