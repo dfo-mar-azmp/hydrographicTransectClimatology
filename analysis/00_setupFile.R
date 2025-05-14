@@ -5,7 +5,8 @@ if(!exists('makeDirs')){
 }
 # load file that defines arcPath
 ## define file
-arcPathFile <- '00_arcPath.R'
+pathToArcFile <- ifelse(basename(getwd()) == 'analysis', './', '../analysis') # to avoid errors when building report
+arcPathFile <- paste(pathToArcFile, '00_arcPath.R', sep = '/')
 ## function to check
 checkArcPath <- function(file){
   if(file.exists(file)){
