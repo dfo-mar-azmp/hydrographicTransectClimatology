@@ -1,6 +1,6 @@
 ---
-title: "Maritimes region Atlantic Zone Monitoring Program 1991 to 2020 hydrographic transect climatology"
-french_title: "Maritimes region Atlantic Zone Monitoring Program 1991 to 2020 hydrographic transect climatology"
+title: "Maritimes Region Atlantic Zone Monitoring Program 1991 to 2020 Hydrographic Transect Climatology"
+french_title: "Maritimes Region Atlantic Zone Monitoring Program 1991 to 2020 Hydrographic Transect Climatology"
 year: 2025
 report_number: nnn
 author: |
