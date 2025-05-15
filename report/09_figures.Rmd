@@ -1,3 +1,4 @@
+\pagebreak
 # Figures {#ref-figures}
 ```{r analysisPath}
 path <- '../analysis'
