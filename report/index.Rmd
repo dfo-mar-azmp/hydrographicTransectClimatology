@@ -25,7 +25,7 @@ author_footnote: "Email:Chantelle.Layton@dfo-mpo.gc.ca # | telephone: (250) 756-
 abstract: |
   The hydrographic 1991 to 2020 climatology for the Maritimes region Atlantic Zone Monitoring Program core transects, Cabot Strait, Louisbourg, Halifax, Browns Bank, and Northeast Channel, are calculated to support annual reporting on seasonal variability. Details on data coverage for these transects and ancillary transects occupied since the inception of the program are provided. Comparisons with the previous climatology period, years 1981 to 2010, are summarized when possible.
 french_abstract: |
-  Voici le résumé. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  La climatologie hydrographique de 1991 à 2020 pour les transects principaux du Programme de monitorage de la zone Atlantique dans la région des Maritimes : détroit de Cabot, Louisbourg, Halifax, banc Browns et chenal Nord-Est, est calculée afin d’appuyer la production de rapports annuels sur la variabilité saisonnière. Des détails sur la couverture des données pour ces transects et les transects annexes occupés depuis le début du programme sont fournis. Les comparaisons avec la période climatologique précédente, de 1981 à 2010, sont résumées dans la mesure du possible.
 citation_french: "test"
 output:
  csasdown::techreport_pdf:
