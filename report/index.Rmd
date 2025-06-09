@@ -2,13 +2,13 @@
 title: "Maritimes Region Atlantic Zone Monitoring Program 1991 to 2020 Hydrographic Transect Climatology"
 french_title: "Maritimes Region Atlantic Zone Monitoring Program 1991 to 2020 Hydrographic Transect Climatology"
 year: 2025
-report_number: nnn
+report_number: 229
 author: |
   Chantelle Layton^1^
 author_list: "Layton, C."
 region: Maritimes Region
 french_region: Région du Maritimes
-isbn: ""
+isbn: "978-0-660-77722-1"
 address: |
   ^1^Fisheries and Oceans Canada\
      Bedford Institute of Oceanography\
