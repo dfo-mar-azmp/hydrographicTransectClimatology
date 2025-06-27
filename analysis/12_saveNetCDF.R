@@ -38,17 +38,20 @@ for(i in 1:length(climatology)){
       station <- stationNumber # not great, but to avoid errors ?
     }
     # define dimensions
-    dimpress <- ncdim_def(name = 'PRESPR01', 
+    dimpress <- ncdim_def(#name = 'PRESPR01', # BODC
+                          name = 'sea_water_pressure', # CF
                           units = 'dbar', 
                           vals = pressure,
                           longname = 'Pressure (spatial coordinate) exerted by the water body by profiling pressure sensor and correction to read zero at sea level')
     dimstn <- ncdim_def(name = 'station', units = 'none', vals = stationNumber) # has to be numeric
     # define variables
-    varlon <- ncvar_def(name = 'ALONZZ01', 
-                        units = 'degrees_east', 
+    varlon <- ncvar_def(name = 'longitude', # CF
+                        #name = 'ALONZZ01', # BODC
+                        units = 'degree_east', 
                         dim = list(dimstn))
-    varlat <- ncvar_def(name = 'ALATZZ01', 
-                        units = 'degrees_north', 
+    varlat <- ncvar_def(name = 'latitude', # CF
+                        #name = 'ALATZZ01', 
+                        units = 'degree_north', 
                         dim = list(dimstn))
     # define number of characters for station output (see `ncvar_put` for example)
     dimnchar <- ncdim_def(name = 'nchar', units = "", vals = 1:length(stationNumber), create_dimvar = FALSE)
@@ -56,36 +59,52 @@ for(i in 1:length(climatology)){
                         units = '',
                         dim = list(dimnchar, dimstn),
                         prec = 'char')
-    varT <- ncvar_def(name = 'TEMPP901', 
+    varT <- ncvar_def(name = 'sea_water_temperature', # CF
+                      #name = 'TEMPP901', # BODC
                       units = 'degree_C',
                       longname = "Temperature (ITS-90) of the water body",
                       missval = NA,
+                      prec = 'double',
                       dim = list(dimpress, dimstn))
-    varTSD <- ncvar_def(name = "TEMPSD01",
+    varTSD <- ncvar_def(name = 'sea_water_temperature_standard_deviation',
+                        #name = "TEMPSD01",
                         units = 'degree_C',
                         longname = "Temperature (ITS-90) standard deviation of the water body",
                         missval = NA,
+                        prec = 'double',
                         dim = list(dimpress, dimstn))
-    varS <- ncvar_def(name = 'PSLTZZ01', 
+    varS <- ncvar_def(name = 'sea_water_practical_salinity', # CF
+                      #name = 'PSLTZZ01', # BODC
                       units = 'none',
                       longname = "Practical salinity of the water body",
                       missval = NA,
+                      prec = 'double',
                       dim = list(dimpress, dimstn))
-    varSSD <- ncvar_def(name = "SDALPR01",
+    varSSD <- ncvar_def(name = 'sea_water_practical_salinity_standard_deviation',
+                        #name = "SDALPR01",
                         units = 'none',
                         longname = 'Practical salinity standard deviation of the water body by conductivity cell and computation using UNESCO 1983 algorithm',
                         missval = NA,
+                        prec = 'double',
                         dim = list(dimpress, dimstn))
-    varST <- ncvar_def(name = 'SIGTPR01',
+    varST <- ncvar_def(name = 'sea_water_sigma_theta',
+                       #name = 'SIGTPR01',
                        units = 'kg m-3',
                        longname = "Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm",
                        missval = NA,
+                       prec = 'double',
                        dim = list(dimpress, dimstn))
+    varSTSD <- ncvar_def(name = 'sea_water_sigma_theta_standard_deviation',
+                         units = 'kg m-3',
+                         longname = "Sigma-theta standard deviation of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm",
+                         missval = NA,
+                         prec = 'double',
+                         dim = list(dimpress, dimstn))
     # list all variables together to load them together
     varlist <- list(varlon, varlat, varstn,
                     varT, varTSD,
                     varS, varSSD,
-                    varST)
+                    varST, varSTSD)
     # output data
     outputfile <- paste0(paste('Maritimes', 
                                'AZMP', 
@@ -103,40 +122,52 @@ for(i in 1:length(climatology)){
     # add standard name, BODC parameter, and uom attributes
     # latitude
     ncatt_put(con, varlat, 'standard_name', 'latitude')
-    ncatt_put(con, varlat, 'sd_parameter_name', 'Latitude north')
-    ncatt_put(con, varlat, 'sd_parameter_urn', 'ALATZZ01')
-    ncatt_put(con, varlat, 'sd_uom_name', 'degrees')
-    ncatt_put(con, varlat, 'sd_uom_urn', 'UAAA')
+    ncatt_put(con, varlat, 'sdn_parameter_name', 'Latitude north')
+    ncatt_put(con, varlat, 'sdn_parameter_urn', 'ALATZZ01')
+    ncatt_put(con, varlat, 'sdn_uom_name', 'degree_north')
+    ncatt_put(con, varlat, 'sdn_uom_urn', 'DEGN')
     # longitude
     ncatt_put(con, varlon, 'standard_name', 'longitude')
-    ncatt_put(con, varlon, 'sd_parameter_name', 'Longitude east')
-    ncatt_put(con, varlon, 'sd_parameter_urn', 'ALONZZ01')
-    ncatt_put(con, varlon, 'sd_uom_name', 'degrees')
-    ncatt_put(con, varlon, 'sd_uom_urn', 'UAAA')
+    ncatt_put(con, varlon, 'sdn_parameter_name', 'Longitude east')
+    ncatt_put(con, varlon, 'sdn_parameter_urn', 'ALONZZ01')
+    ncatt_put(con, varlon, 'sdn_uom_name', 'degree_east')
+    ncatt_put(con, varlon, 'sdn_uom_urn', 'DEGE')
     # pressure
     # ncatt_put(con, varpress, 'standard_name', 'sea_water_pressure')
-    # ncatt_put(con, varpress, 'sd_parameter_name', 'Pressure (spatial coordinate) exerted by the water body by profiling pressure sensor and correction to read zero at sea level')
-    # ncatt_put(con, varpress, 'sd_parameter_urn', 'PRESPR01')
-    # ncatt_put(con, varpress, 'sd_uom_name', 'dbar')
-    # ncatt_put(con, varpress, 'sd_uom_urn', 'UPDB')
+    # ncatt_put(con, varpress, 'sdn_parameter_name', 'Pressure (spatial coordinate) exerted by the water body by profiling pressure sensor and correction to read zero at sea level')
+    # ncatt_put(con, varpress, 'sdn_parameter_urn', 'PRESPR01')
+    # ncatt_put(con, varpress, 'sdn_uom_name', 'dbar')
+    # ncatt_put(con, varpress, 'sdn_uom_urn', 'UPDB')
     # temperature
     ncatt_put(con, varT, 'standard_name', 'sea_water_temperature')
-    ncatt_put(con, varT, 'sd_parameter_name', 'Temperature of the water body')
-    ncatt_put(con, varT, 'sd_parameter_urn', 'TEMPPR01')
-    ncatt_put(con, varT, 'sd_uom_name', 'degrees Celcius')
-    ncatt_put(con, varT, 'sd_uom_urn', 'UPAA')
+    ncatt_put(con, varT, 'sdn_parameter_name', 'Temperature of the water body')
+    ncatt_put(con, varT, 'sdn_parameter_urn', 'TEMPPR01')
+    ncatt_put(con, varT, 'sdn_uom_name', 'degrees Celcius')
+    ncatt_put(con, varT, 'sdn_uom_urn', 'UPAA')
+    # temperature standard deviation
+    ncatt_put(con, varT, 'standard_name', 'sea_water_temperature_standard_deviation')
+    ncatt_put(con, varT, 'sdn_parameter_name', 'Temperature (ITS-90) standard deviation of the water body')
+    ncatt_put(con, varT, 'sdn_parameter_urn', 'TEMPSD01')
+    ncatt_put(con, varT, 'sdn_uom_name', 'degrees Celcius')
+    ncatt_put(con, varT, 'sdn_uom_urn', 'UPAA')
     # salinity
     ncatt_put(con, varS, 'standard_name', 'sea_water_practical_salinity')
-    ncatt_put(con, varS, 'sd_parameter_name', 'Practical salinity of the water body')
-    ncatt_put(con, varS, 'sd_parameter_urn', 'PSLTZZ01')
-    ncatt_put(con, varS, 'sd_uom_name', '')
-    ncatt_put(con, varS, 'sd_uom_urn', '')
+    ncatt_put(con, varS, 'sdn_parameter_name', 'Practical salinity of the water body')
+    ncatt_put(con, varS, 'sdn_parameter_urn', 'PSLTZZ01')
+    ncatt_put(con, varS, 'sdn_uom_name', '')
+    ncatt_put(con, varS, 'sdn_uom_urn', '')
+    # salinity standard deviation
+    ncatt_put(con, varS, 'standard_name', 'sea_water_practical_salinity_standard_deviation')
+    ncatt_put(con, varS, 'sdn_parameter_name', 'Practical salinity standard deviation of the water body by conductivity cell and computation using UNESCO 1983 algorithm')
+    ncatt_put(con, varS, 'sdn_parameter_urn', 'SDALPR01')
+    ncatt_put(con, varS, 'sdn_uom_name', '')
+    ncatt_put(con, varS, 'sdn_uom_urn', '')
     # sigmaTheta
     ncatt_put(con, varST, 'standard_name', 'sea_water_sigma_theta')
-    ncatt_put(con, varST, 'sd_parameter_name', "Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm")
-    ncatt_put(con, varST, 'sd_parameter_urn', 'SIGTPR01')
-    ncatt_put(con, varST, 'sd_uom_name', 'kilograms per cubic meter')
-    ncatt_put(con, varST, 'sd_uom_urn', 'UKMC')
+    ncatt_put(con, varST, 'sdn_parameter_name', "Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm")
+    ncatt_put(con, varST, 'sdn_parameter_urn', 'SIGTPR01')
+    ncatt_put(con, varST, 'sdn_uom_name', 'kilograms per cubic meter')
+    ncatt_put(con, varST, 'sdn_uom_urn', 'UKMC')
     # store global attributes (indicated by varid = 0 in ncatt_put)
     title <- paste("The Maritimes region Atlantic Zone Monitoring Program",
                    getLocationName(d[['transect']]),
@@ -160,12 +191,27 @@ for(i in 1:length(climatology)){
                      climatologyDateRange)
     references <- ''
     ncatt_put(con, varid = 0, attname = 'title', attval = title)
-    ncatt_put(con, varid = 0, attname = 'institute', attval = institute)
     ncatt_put(con, varid = 0, attname = 'source', attval = source)
     ncatt_put(con, varid = 0, attname = 'history', attval = history)
     ncatt_put(con, varid = 0, attname = 'comment', attval = comment)
     ncatt_put(con, varid = 0, attname = 'Conventions', attval = 'CF-1.8')
-    ncatt_put(con, varid = 0, attname = 'author', attval = author)
+    ncatt_put(con, varid = 0, attname = "country_code", attval = 1810)
+    ncatt_put(con, varid = 0, attname = "sdn_country_id", attval = "SDN:C18::18")
+    ncatt_put(con, varid = 0, attname = "sdn_country_vocabulary", attval = "http://vocab.nerc.ac.uk/collection/C18/current/")
+    ncatt_put(con, varid = 0, attname = "institution", attval= "DFO BIO")
+    ncatt_put(con, varid = 0, attname = "sdn_institution_id", attval= "SDN:EDMO::1811")
+    ncatt_put(con, varid = 0, attname = "sdn_institution_vocabulary", attval = "https://edmo.seadatanet.org, EUROPEAN DIRECTORY OF MARINE ORGANISATIONS (EDMO)")
+    ncatt_put(con, varid = 0, attname = "creator_type", attval = "person")
+    ncatt_put(con, varid = 0, attname = "creator_name", attval = "Chantelle Layton")
+    ncatt_put(con, varid = 0, attname = "creator_country", attval = "Canada")
+    ncatt_put(con, varid = 0, attname = "creator_email", attval = "BIO.Datashop@dfo-mpo.gc.ca")
+    ncatt_put(con, varid = 0, attname = "creator_institution", attval = "Bedford Institute of Oceanography")
+    ncatt_put(con, varid = 0, attname = "creator_address", attval= "P.O. Box 1006, 1 Challenger Dr.")
+    ncatt_put(con, varid = 0, attname = "creator_city", attval = "Dartmouth")
+    ncatt_put(con, varid = 0, attname = "creator_sector", attval = "gov_federal")
+    ncatt_put(con, varid = 0, attname = "creator_url", attval = "https://www.bio.gc.ca/index-en.php")
+    ncatt_put(con, varid = 0, attname = "sdn_creator_id", attval = "SDN:EDMO::1811")
+    ncatt_put(con, varid = 0, attname = "license", attval = "Open Government Licence – Canada,  https://open.canada.ca/en/open-government-licence-canada")
     
     # get the data
     lon <- s[['longitude', 'byStation']]
@@ -202,6 +248,14 @@ for(i in 1:length(climatology)){
       }
     }
     # store the data
+    ## global attributes
+    ncatt_put(con, varid = 0, attname = "geospatial_lat_min", attval = min(lat))
+    ncatt_put(con, varid = 0, attname = "geospatial_lat_max", attval = max(lat))
+    ncatt_put(con, varid = 0, attname = "geospatial_lat_units", attval = "degree_north")
+    ncatt_put(con, varid = 0, attname = "geospatial_lon_min", attval = min(lon))
+    ncatt_put(con, varid = 0, attname = "geospatial_lon_max", attval = max(lon))
+    ncatt_put(con, varid = 0, attname = "geospatial_lon_units", attval = "degree_east")
+    ## global variables
     ncvar_put(nc = con, varid = varlon, vals = lon)
     ncvar_put(nc = con, varid = varlat, vals = lat)
     ncvar_put(nc = con, varid = varstn, vals = station)
@@ -210,7 +264,8 @@ for(i in 1:length(climatology)){
     ncvar_put(nc = con, varid = varS, vals = S)
     ncvar_put(nc = con, varid = varSSD, vals = Ssd)
     ncvar_put(nc = con, varid = varST, vals = ST)
-    
+    ncvar_put(nc = con, varid = varSTSD, vals = STsd)
+    # close connection
     (con)
     nc_close(con)
   }
