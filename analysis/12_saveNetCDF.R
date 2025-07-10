@@ -145,11 +145,11 @@ for(i in 1:length(climatology)){
     ncatt_put(con, varT, 'sdn_uom_name', 'degrees Celcius')
     ncatt_put(con, varT, 'sdn_uom_urn', 'UPAA')
     # temperature standard deviation
-    ncatt_put(con, varT, 'standard_name', 'sea_water_temperature_standard_deviation')
-    ncatt_put(con, varT, 'sdn_parameter_name', 'Temperature (ITS-90) standard deviation of the water body')
-    ncatt_put(con, varT, 'sdn_parameter_urn', 'TEMPSD01')
-    ncatt_put(con, varT, 'sdn_uom_name', 'degrees Celcius')
-    ncatt_put(con, varT, 'sdn_uom_urn', 'UPAA')
+    ncatt_put(con, varTSD, 'standard_name', 'sea_water_temperature_standard_deviation')
+    ncatt_put(con, varTSD, 'sdn_parameter_name', 'Temperature (ITS-90) standard deviation of the water body')
+    ncatt_put(con, varTSD, 'sdn_parameter_urn', 'TEMPSD01')
+    ncatt_put(con, varTSD, 'sdn_uom_name', 'degrees Celcius')
+    ncatt_put(con, varTSD, 'sdn_uom_urn', 'UPAA')
     # salinity
     ncatt_put(con, varS, 'standard_name', 'sea_water_practical_salinity')
     ncatt_put(con, varS, 'sdn_parameter_name', 'Practical salinity of the water body')
@@ -157,11 +157,11 @@ for(i in 1:length(climatology)){
     ncatt_put(con, varS, 'sdn_uom_name', '')
     ncatt_put(con, varS, 'sdn_uom_urn', '')
     # salinity standard deviation
-    ncatt_put(con, varS, 'standard_name', 'sea_water_practical_salinity_standard_deviation')
-    ncatt_put(con, varS, 'sdn_parameter_name', 'Practical salinity standard deviation of the water body by conductivity cell and computation using UNESCO 1983 algorithm')
-    ncatt_put(con, varS, 'sdn_parameter_urn', 'SDALPR01')
-    ncatt_put(con, varS, 'sdn_uom_name', '')
-    ncatt_put(con, varS, 'sdn_uom_urn', '')
+    ncatt_put(con, varSSD, 'standard_name', 'sea_water_practical_salinity_standard_deviation')
+    ncatt_put(con, varSSD, 'sdn_parameter_name', 'Practical salinity standard deviation of the water body by conductivity cell and computation using UNESCO 1983 algorithm')
+    ncatt_put(con, varSSD, 'sdn_parameter_urn', 'SDALPR01')
+    ncatt_put(con, varSSD, 'sdn_uom_name', '')
+    ncatt_put(con, varSSD, 'sdn_uom_urn', '')
     # sigmaTheta
     ncatt_put(con, varST, 'standard_name', 'sea_water_sigma_theta')
     ncatt_put(con, varST, 'sdn_parameter_name', "Sigma-theta of the water body by CTD and computation from salinity and potential temperature using UNESCO algorithm")
