@@ -2,7 +2,7 @@
 
 ## Overview 
 
-Repository for the "Maritimes Region Atlantic Zone Monitoring Program 1991 to 2020 hydrographic transect climatology" report published in 2025.
+Repository for the [Maritimes Region Atlantic Zone Monitoring Program 1991 to 2020 hydrographic transect climatology](https://publications.gc.ca/site/eng/9.952033/publication.html) report published in 2025.
 It contains all necessary scripts to run the analysis and create the report. It does not contain any data files or figures.
 The directory structure is as follows :
 
